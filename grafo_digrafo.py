@@ -32,6 +32,17 @@ class Grafo:
 
     def n(self): # Vértices
         return len(self.vertices)
+    
+    def m(self): # Arestas
+        if self.usar_matriz:
+            # Somando todos os tamanhos da quantidade de vizinhos de cada iteração/pagina do dicionario
+            total_arestas = sum(len(vizinhos) for vizinhos in self.matriz_adjacencia.values())
+        else:
+            total_arestas = len(self.pesos)
+        
+        # Divide por 2 por causa do grafo que possui duas areastas no mesmo arco
+        return total_arestas if self.direcionado else (total_arestas // 2)
+
 
 class Digrafo(Grafo):
     def __init__(self, usar_matriz=False):
