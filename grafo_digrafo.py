@@ -65,6 +65,12 @@ class Grafo:
                 return len(self.matriz_adjacencia[v])
             else:
                 return len(self.lista_adjacencia.get(v, []))
+            
+    def w(self, u, v):  # Peso da aresta uv
+        if self.usar_matriz:
+            return self.matriz_adjacencia.get(u, {}).get(v, None)
+        else:
+            return self.pesos.get((u, v), None)
 
 
 class Digrafo(Grafo):
