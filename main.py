@@ -26,16 +26,19 @@ class Main:
         print(teste)
         print(f"Número de vértices: {grafo.n()}")
         print(f"Número de arestas: {grafo.m()}")
+        print(f"Vizinhança do vértice 56: {grafo.viz(56)}")
+        print(f"Grau do vértice 56: {grafo.d(56)}")
+        print("")
 
 
 # Teste 1: Digrafo com Lista de Adjacencia
-#Main.mostrar_resultados(usar_matriz=False, usar_digrafo=True, teste='Teste 1: Digrafo com Lista de Adjacencia')
+Main.mostrar_resultados(usar_matriz=False, usar_digrafo=True, teste='Teste 1: Digrafo com Lista de Adjacencia')
 
 # Teste 2: Grafo com Lista de Adjacencia
-#Main.mostrar_resultados(usar_matriz=False, usar_digrafo=False, teste='Teste 2: Grafo com Lista de Adjacencia')
+Main.mostrar_resultados(usar_matriz=False, usar_digrafo=False, teste='Teste 2: Grafo com Lista de Adjacencia')
 
 # Teste 3: Digrafo com Matriz de Adjacencia
 Main.mostrar_resultados(usar_matriz=True, usar_digrafo=True, teste='Teste 3: Digrafo com Matriz de Adjacencia')
 
 # Teste 4: Grafo com Matriz de Adjacencia
-#Main.mostrar_resultados(usar_matriz=True, usar_digrafo=False, teste='Teste 4: Grafo com Matriz de Adjacencia')
+Main.mostrar_resultados(usar_matriz=True, usar_digrafo=False, teste='Teste 4: Grafo com Matriz de Adjacencia')
