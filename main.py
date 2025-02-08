@@ -24,13 +24,16 @@ class Main:
         arquivo = "USA-road-d.NY.gr"
         grafo = Main.abrir_arquivo(arquivo, usar_matriz, usar_digrafo)
         print(teste)
-        print(f"Número de vértices: {grafo.n()}")
-        print(f"Número de arestas: {grafo.m()}")
-        print(f"Vizinhança do vértice 56: {grafo.viz(56)}")
-        print(f"Grau do vértice 56: {grafo.d(56)}")
-        print(F"Peso da aresta (55, 56): {grafo.w(u=55, v=56)}")
-        print(F"Peso da aresta (2, 4): {grafo.w(u=2, v=4)}")
-        print(F"Menor Grau: {grafo.mind()}")
+        print(f"a) Número de vértices: {grafo.n()}")
+        print(f"b) Número de arestas: {grafo.m()}")
+        print(f"c) Vizinhança do vértice 56: {grafo.viz(56)}")
+        print(f"d) Grau do vértice 56: {grafo.d(56)}")
+        print(F"e) Peso da aresta (55, 56): {grafo.w(u=55, v=56)}")
+        print(F"e) Peso da aresta (2, 4): {grafo.w(u=2, v=4)}")
+        v1, grau1 = grafo.mind()
+        print(F"f) O vértice de menor grau é {v1} com grau {grau1}")
+        v2, grau2 = grafo.maxd()
+        print(F"g) O vértice de maior grau é {v2} com grau {grau2}")
         print("")
 
 

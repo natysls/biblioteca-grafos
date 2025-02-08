@@ -7,7 +7,7 @@ class Grafo:
         self.pesos = {} if not usar_matriz else None
         self.lista_adjacencia = {} if not usar_matriz else None
         self.matriz_adjacencia = defaultdict(dict) if usar_matriz else None
-        self.grau = defaultdict(int) # Dicionário para armazenar o grau de cada vértice do Mind
+        self.grau = defaultdict(int) # de cada vertice
 
     def adicionar_aresta(self, u, v, peso=1):
         self.vertices.update([u, v])
@@ -80,8 +80,15 @@ class Grafo:
             return self.pesos.get((u, v), None)
         
     def mind(self):  # Menor grau presente no grafo
-        return min(self.grau.values()) 
-
+        vertice_minimo = min(self.grau, key=self.grau.get)  
+        grau_minimo = self.d(vertice_minimo)
+        return vertice_minimo, grau_minimo 
+        #return min(self.grau.values()) 
+    
+    def maxd(self): # Vértice com o maior grau e o valor do maior grau no grafo
+        vertice_maximo = max(self.grau, key=self.grau.get)  
+        grau_maximo = self.d(vertice_maximo)
+        return vertice_maximo, grau_maximo 
 
 class Digrafo(Grafo):
     def __init__(self, usar_matriz=False):
