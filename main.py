@@ -30,6 +30,7 @@ class Main:
         print(f"Grau do vértice 56: {grafo.d(56)}")
         print(F"Peso da aresta (55, 56): {grafo.w(u=55, v=56)}")
         print(F"Peso da aresta (2, 4): {grafo.w(u=2, v=4)}")
+        print(F"Menor Grau: {grafo.mind()}")
         print("")
 
 
