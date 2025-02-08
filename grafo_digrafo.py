@@ -34,10 +34,10 @@ class Grafo:
         self.grau[u] += 1
         self.grau[v] += 1 
 
-    def n(self): # Vértices
+    def n(self): # Quantidade de Vértices
         return len(self.vertices)
     
-    def m(self): # Arestas
+    def m(self): # Quantidade de Arestas
         if self.usar_matriz:
             # Somando todos os tamanhos da quantidade de vizinhos de cada iteração/pagina do dicionario
             total_arestas = sum(len(vizinhos) for vizinhos in self.matriz_adjacencia.values())
@@ -54,23 +54,6 @@ class Grafo:
             return self.lista_adjacencia.get(v, [])
         
     def d(self, v):  # Grau do vértice v
-        '''''
-        if self.direcionado:
-            if self.usar_matriz:
-                # Grau de entrada + grau de saída em um grafo direcionado
-                grau_saida = len(self.matriz_adjacencia[v])
-                grau_entrada = sum(1 for u in self.matriz_adjacencia if v in self.matriz_adjacencia[u])
-                return grau_saida, grau_entrada 
-            else:
-                grau_saida = len(self.lista_adjacencia.get(v, []))
-                grau_entrada = sum(1 for u in self.lista_adjacencia if v in self.lista_adjacencia[u])
-                return grau_saida, grau_entrada
-        else:
-            if self.usar_matriz:
-                return len(self.matriz_adjacencia[v])
-            else:
-                return len(self.lista_adjacencia.get(v, []))
-        '''
         return self.grau[v] # O(1)
             
     def w(self, u, v):  # Peso da aresta uv
@@ -83,12 +66,45 @@ class Grafo:
         vertice_minimo = min(self.grau, key=self.grau.get)  
         grau_minimo = self.d(vertice_minimo)
         return vertice_minimo, grau_minimo 
-        #return min(self.grau.values()) 
     
     def maxd(self): # Vértice com o maior grau e o valor do maior grau no grafo
         vertice_maximo = max(self.grau, key=self.grau.get)  
         grau_maximo = self.d(vertice_maximo)
         return vertice_maximo, grau_maximo 
+
+    def relaxamento(self, origem, destino, peso, d, pi):
+        if d[destino] > d[origem] + peso:  
+            d[destino] = d[origem] + peso
+            pi[destino] = origem
+    
+    def bf(self, v): # Bellman-Ford
+        """
+        - d: distâncias mínimas de v para cada vértice (calculada iterativamente) (soma dos pesos)
+        - pi: pai de cada vértice no caminho mínimo.
+        """
+        d = {vertice: float('inf') for vertice in self.vertices}
+        pi = {vertice: None for vertice in self.vertices}
+        
+        d[v] = 0  # A distância do vértice de origem para ele mesmo é 0
+        msg = "Tudo certo"
+
+        for _ in range(len(self.vertices) - 1): # Relaxamento das arestas |V| - 1 vezes
+            for u in self.vertices:
+                for v in (self.lista_adjacencia[u] if not self.usar_matriz else self.matriz_adjacencia.get(u, {})):
+                    peso = self.w(u, v)  
+                    self.relaxamento(origem=u, destino=v, peso=peso, d=d, pi=pi)
+                    
+                    if not self.direcionado:
+                        self.relaxamento(origem=v, destino=u, peso=peso, d=d, pi=pi)
+
+        # Verificação de ciclos de peso negativo
+        for u in self.vertices:
+            for v in (self.lista_adjacencia[u] if not self.usar_matriz else self.matriz_adjacencia.get(u, {})):
+                peso = self.w(u, v)
+                if d[v] > d[u] + peso:
+                    msg = "O grafo contém um ciclo de peso negativo!"
+
+        return d, pi, msg
 
 class Digrafo(Grafo):
     def __init__(self, usar_matriz=False):
