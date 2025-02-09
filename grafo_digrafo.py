@@ -80,6 +80,25 @@ class Grafo:
             if destino not in na_fila:
                 fila.append(destino)
                 na_fila.add(destino)
+
+    def bfs(self, v):
+        d = [-1] * (self.n() + 1) 
+        pi = [None] * (self.n() + 1)
+        
+        d[v] = 0
+        fila = deque([v])
+
+        while fila:
+            vertice_atual = fila.popleft()
+            for atual in self.viz(v=vertice_atual):  # Corrigido aqui
+                peso = self.w(u=vertice_atual, v=atual)  
+                if d[atual] == -1:  
+                    d[atual] = d[vertice_atual] + peso  
+                    pi[atual] = vertice_atual 
+                    fila.append(atual) 
+                    #print(f"Aresta visitada: ({vertice_atual}, {atual}) com peso {peso}")
+        
+        return d, pi
     
     def bf(self, v): # Bellman-Ford
         """
