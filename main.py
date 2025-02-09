@@ -55,7 +55,7 @@ class Main:
         v2, grau2 = grafo.maxd()
         print(F"g) O vértice de maior grau é {v2} com grau {grau2}")
         
-        d, pi, msg = grafo.bf(0)
+        d, pi, msg = grafo.bf(1)
         print("j) Bellman-Ford")
         print("Distâncias mínimas:", d)
         print("Pais:", pi)

@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 class Grafo:
     def __init__(self, direcionado=False, usar_matriz=False):
         self.direcionado = direcionado
@@ -72,15 +72,21 @@ class Grafo:
         grau_maximo = self.d(vertice_maximo)
         return vertice_maximo, grau_maximo 
 
-    def relaxamento(self, origem, destino, peso, d, pi):
+    def relaxamento(self, origem, destino, peso, d, pi, fila, na_fila):
         if d[destino] > d[origem] + peso:  
             d[destino] = d[origem] + peso
             pi[destino] = origem
+
+            if destino not in na_fila:
+                fila.append(destino)
+                na_fila.add(destino)
     
     def bf(self, v): # Bellman-Ford
         """
         - d: distâncias mínimas de v para cada vértice (calculada iterativamente) (soma dos pesos)
         - pi: pai de cada vértice no caminho mínimo.
+        Pior caso: |V| - 1 iterações complexidade O(V * E) não processa alto volume de vertices
+        Melhor caso: Fila O(E)
         """
         d = {vertice: float('inf') for vertice in self.vertices}
         pi = {vertice: None for vertice in self.vertices}
@@ -88,14 +94,21 @@ class Grafo:
         d[v] = 0  # A distância do vértice de origem para ele mesmo é 0
         msg = "Tudo certo"
 
-        for _ in range(len(self.vertices) - 1): # Relaxamento das arestas |V| - 1 vezes
-            for u in self.vertices:
-                for v in (self.lista_adjacencia[u] if not self.usar_matriz else self.matriz_adjacencia.get(u, {})):
-                    peso = self.w(u, v)  
-                    self.relaxamento(origem=u, destino=v, peso=peso, d=d, pi=pi)
-                    
-                    if not self.direcionado:
-                        self.relaxamento(origem=v, destino=u, peso=peso, d=d, pi=pi)
+        # Processando grande volume de vértices (somente vértices que realmente mudaram na última iteração)
+        fila = deque([v])
+        na_fila = {v}  # Vértices que estão na fila
+
+        while fila:
+            u = fila.popleft()
+            na_fila.remove(u)  # Pois agora será processado
+
+            vizinhos = self.lista_adjacencia[u] if not self.usar_matriz else self.matriz_adjacencia.get(u, {})
+            for v in vizinhos:
+                peso = self.w(u, v)  
+                self.relaxamento(origem=u, destino=v, peso=peso, d=d, pi=pi, fila=fila, na_fila=na_fila)
+                
+                if not self.direcionado:
+                    self.relaxamento(origem=v, destino=u, peso=peso, d=d, pi=pi, fila=fila, na_fila=na_fila)
 
         # Verificação de ciclos de peso negativo
         for u in self.vertices:
