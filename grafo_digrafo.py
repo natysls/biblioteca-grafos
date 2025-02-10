@@ -5,7 +5,7 @@ class Grafo:
         self.usar_matriz = usar_matriz
         self.vertices = set()
         self.pesos = {} if not usar_matriz else None
-        self.lista_adjacencia = {} if not usar_matriz else None
+        self.lista_adjacencia = defaultdict(dict) if not usar_matriz else None
         self.matriz_adjacencia = defaultdict(dict) if usar_matriz else None
         self.grau = defaultdict(int) # de cada vertice
 
@@ -19,17 +19,14 @@ class Grafo:
                 self.matriz_adjacencia[v][u] = peso
                 
         else:
-            if u not in self.lista_adjacencia:
-                self.lista_adjacencia[u] = []
-            if v not in self.lista_adjacencia:
-                self.lista_adjacencia[v] = []
-            
-            self.lista_adjacencia[u].append(v)
-            self.pesos[(u, v)] = peso
-            
-            if not self.direcionado:
-                self.lista_adjacencia[v].append(u)
-                self.pesos[(v, u)] = peso
+            # Verifica se já existe a aresta para evitar contagem repetida no grau
+            if v not in self.lista_adjacencia[u]:
+                self.lista_adjacencia[u][v] = peso  # Tentando melhorar o desempenho do bf
+                self.grau[u] += 1
+
+            if not self.direcionado and u not in self.lista_adjacencia[v]:
+                self.lista_adjacencia[v][u] = peso
+                self.grau[v] += 1
 
         self.grau[u] += 1
         self.grau[v] += 1 
@@ -42,7 +39,7 @@ class Grafo:
             # Somando todos os tamanhos da quantidade de vizinhos de cada iteração/pagina do dicionario
             total_arestas = sum(len(vizinhos) for vizinhos in self.matriz_adjacencia.values())
         else:
-            total_arestas = len(self.pesos)
+            total_arestas =  sum(len(vizinhos) for vizinhos in self.lista_adjacencia.values())
         
         # Divide por 2 por causa do grafo que possui duas areastas no mesmo arco
         return total_arestas if self.direcionado else (total_arestas // 2)
@@ -51,7 +48,7 @@ class Grafo:
         if self.usar_matriz:
             return list(self.matriz_adjacencia[v].keys())
         else:
-            return self.lista_adjacencia.get(v, [])
+            return list(self.lista_adjacencia[v].keys())
         
     def d(self, v):  # Grau do vértice v
         return self.grau[v] # O(1)
@@ -60,7 +57,7 @@ class Grafo:
         if self.usar_matriz:
             return self.matriz_adjacencia.get(u, {}).get(v, None)
         else:
-            return self.pesos.get((u, v), None)
+            return self.lista_adjacencia.get(u, {}).get(v, None) 
         
     def mind(self):  # Menor grau presente no grafo
         vertice_minimo = min(self.grau, key=self.grau.get)  
@@ -71,15 +68,6 @@ class Grafo:
         vertice_maximo = max(self.grau, key=self.grau.get)  
         grau_maximo = self.d(vertice_maximo)
         return vertice_maximo, grau_maximo 
-
-    def relaxamento(self, origem, destino, peso, d, pi, fila, na_fila):
-        if d[destino] > d[origem] + peso:  
-            d[destino] = d[origem] + peso
-            pi[destino] = origem
-
-            if destino not in na_fila:
-                fila.append(destino)
-                na_fila.add(destino)
 
     def bfs(self, v):
         d = [-1] * (self.n() + 1) 
@@ -100,6 +88,15 @@ class Grafo:
         
         return d, pi
     
+    def relaxamento(self, origem, destino, peso, d, pi, fila, na_fila):
+        if d[destino] > d[origem] + peso:  
+            d[destino] = d[origem] + peso
+            pi[destino] = origem
+
+            if destino not in na_fila:
+                fila.append(destino)
+                na_fila.add(destino)
+
     def bf(self, v): # Bellman-Ford
         """
         - d: distâncias mínimas de v para cada vértice (calculada iterativamente) (soma dos pesos)
@@ -121,7 +118,7 @@ class Grafo:
             u = fila.popleft()
             na_fila.remove(u)  # Pois agora será processado
 
-            vizinhos = self.lista_adjacencia[u] if not self.usar_matriz else self.matriz_adjacencia.get(u, {})
+            vizinhos = self.viz(u)
             for v in vizinhos:
                 peso = self.w(u, v)  
                 self.relaxamento(origem=u, destino=v, peso=peso, d=d, pi=pi, fila=fila, na_fila=na_fila)
