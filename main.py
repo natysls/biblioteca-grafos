@@ -54,8 +54,12 @@ class Main:
         print(F"f) O vértice de menor grau é {v1} com grau {grau1}")
         v2, grau2 = grafo.maxd()
         print(F"g) O vértice de maior grau é {v2} com grau {grau2}")
+        
         distancias, predecessores = grafo.bfs(v=56)
-        print(F"h) O vértice de maior distancia ate vertice 56 é {distancias.index(max(distancias))} com o seguinte predecessor {predecessores[distancias.index(max(distancias))]}")
+        vertice_max = max(distancias, key=distancias.get)
+        predecessor_max = predecessores[vertice_max]
+        print(f"h) BFS: O vértice de maior distância até 56 é {vertice_max} com o seguinte predecessor {predecessor_max}")
+        
         d, pi, msg = grafo.bf(1)
         print("j) Bellman-Ford")
         print("Distâncias mínimas:", d)
