@@ -7,7 +7,6 @@ class Grafo:
         self.pesos = {} if not usar_matriz else None
         self.lista_adjacencia = defaultdict(dict) if not usar_matriz else None
         self.matriz_adjacencia = defaultdict(dict) if usar_matriz else None
-        self.grau = defaultdict(int) # de cada vertice
 
     def adicionar_aresta(self, u, v, peso=1):
         self.vertices.update([u, v])
@@ -22,14 +21,9 @@ class Grafo:
             # Verifica se já existe a aresta para evitar contagem repetida no grau
             if v not in self.lista_adjacencia[u]:
                 self.lista_adjacencia[u][v] = peso  # Tentando melhorar o desempenho do bf
-                self.grau[u] += 1
 
             if not self.direcionado and u not in self.lista_adjacencia[v]:
                 self.lista_adjacencia[v][u] = peso
-                self.grau[v] += 1
-
-        self.grau[u] += 1
-        self.grau[v] += 1 
 
     def n(self): # Quantidade de Vértices
         return len(self.vertices)
@@ -51,7 +45,10 @@ class Grafo:
             return list(self.lista_adjacencia[v].keys())
         
     def d(self, v):  # Grau do vértice v
-        return self.grau[v] # O(1)
+        if self.usar_matriz:
+            return len(self.matriz_adjacencia[v].keys())
+        else:
+            return len(self.lista_adjacencia[v].keys())
             
     def w(self, u, v):  # Peso da aresta uv
         if self.usar_matriz:
@@ -60,12 +57,12 @@ class Grafo:
             return self.lista_adjacencia.get(u, {}).get(v, None) 
         
     def mind(self):  # Menor grau presente no grafo
-        vertice_minimo = min(self.grau, key=self.grau.get)  
+        vertice_minimo = min(self.vertices, key=self.d)  
         grau_minimo = self.d(vertice_minimo)
         return vertice_minimo, grau_minimo 
     
     def maxd(self): # Vértice com o maior grau e o valor do maior grau no grafo
-        vertice_maximo = max(self.grau, key=self.grau.get)  
+        vertice_maximo = max(self.vertices, key=self.d)   
         grau_maximo = self.d(vertice_maximo)
         return vertice_maximo, grau_maximo 
 
