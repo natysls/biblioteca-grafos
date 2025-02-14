@@ -55,19 +55,25 @@ class Main:
         v2, grau2 = grafo.maxd()
         print(F"g) O vértice de maior grau é {v2} com grau {grau2}")
         
-        distancias, predecessores = grafo.bfs(v=56)
+        distancias, predecessores, caminho_maior_10_areastas = grafo.bfs(v=56)
         vertice_max = max(distancias, key=distancias.get)
         predecessor_max = predecessores[vertice_max]
         print(f"h) BFS: O vértice de maior distância até 56 é {vertice_max} com o seguinte predecessor {predecessor_max}")
-        
-        d, pi, msg = grafo.bf(1)
+        print(f"c2) Um caminho com uma qtde. de arestas maior ou igual a 10 com BFS: {caminho_maior_10_areastas}")
+
+        print("")
+        print("Espera uns 2 minutinhos para execução do Bellman-Ford com o vértice mais distante 129...")
+        d, pi, msg = grafo.bf(129)
+        mais_distante = max(d, key=d.get)
         print("j) Bellman-Ford")
         print("Distâncias mínimas:", d)
+        print("")
         print("Pais:", pi)
         print(msg)
+        print(f"e2) Vértice mais distante: {mais_distante}, Distância: {distancias[mais_distante]}")
         print("")
 
-
+        
 # Teste 1: Digrafo com Lista de Adjacencia
 Main.mostrar_resultados(usar_matriz=False, usar_digrafo=True, teste='Teste 1: Digrafo com Lista de Adjacencia')
 

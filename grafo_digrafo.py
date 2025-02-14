@@ -76,6 +76,8 @@ class Grafo:
         d[v] = 0
         fila = deque([v])
 
+        caminhos = {v: [v]} 
+
         while fila:
             vertice_atual = fila.popleft()
             for atual in self.viz(v=vertice_atual): 
@@ -83,10 +85,13 @@ class Grafo:
                 if d[atual] == -1:  
                     d[atual] = d[vertice_atual] + 1 # 1 = peso uniforme  
                     pi[atual] = vertice_atual 
+                    caminhos[atual] = caminhos[vertice_atual] + [atual]
                     fila.append(atual) 
                     #print(f"Aresta visitada: ({vertice_atual}, {atual}) com peso {peso}")
         
-        return d, pi
+        caminho_maior_10_arestas = next((caminho for caminho in caminhos.values() if len(caminho) >= 11), None)
+
+        return d, pi, caminho_maior_10_arestas
     
     def vertices_alcancaveis(self, v): 
         """"
@@ -94,7 +99,7 @@ class Grafo:
         Evita percorrer vértices que nunca serão atualizados.
         Filtra apenas os vértices alcançáveis
         """
-        distancias, _ = self.bfs(v)
+        distancias, _, _ = self.bfs(v)
         return {u for u, d in distancias.items() if d != -1} 
 
     def relaxamento(self, origem, destino, peso, d, pi, fila, na_fila):
