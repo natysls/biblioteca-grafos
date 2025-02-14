@@ -20,6 +20,15 @@ class Main:
         return grafo
     
     @staticmethod
+    def salvar_resultado_bf(distancias, predecessores, nome_arquivo="resultado_bf.txt"):
+        with open(nome_arquivo, "w") as f:  # Remove "/mnt/data/"
+            f.write("v\td\tpi\n")
+            for vertice, distancia in distancias.items():
+                predecessor = predecessores.get(vertice, "None")
+                f.write(f"{vertice}\t{distancia}\t{predecessor}\n")
+        print(f"Arquivo salvo como {nome_arquivo}")
+    
+    @staticmethod
     def exemplo_facil(usar_matriz, usar_diagrafo):
         if(usar_diagrafo):
             g = Digrafo(usar_matriz)
@@ -62,15 +71,20 @@ class Main:
         print(f"c2) Um caminho com uma qtde. de arestas maior ou igual a 10 com BFS: {caminho_maior_10_areastas}")
 
         print("")
-        print("Espera uns 2 minutinhos para execução do Bellman-Ford com o vértice mais distante 129...")
-        d, pi, msg = grafo.bf(129)
+        print("Espere uns 2 minutinhos para execução do Bellman-Ford iniciando pelo vertice 1, será baixado um .txt...")
+        d, pi, msg = grafo.bf(1)
         mais_distante = max(d, key=d.get)
         print("j) Bellman-Ford")
-        print("Distâncias mínimas:", d)
-        print("")
-        print("Pais:", pi)
+        # Gerando o arquivo
+        Main.salvar_resultado_bf(d, pi, "resultado_bf_1.txt")
         print(msg)
-        print(f"e2) Vértice mais distante: {mais_distante}, Distância: {distancias[mais_distante]}")
+        print(f"e2) Vértice mais distante de 1: {mais_distante}, Distância: {d[mais_distante]}")
+
+        print("")
+        print("Espere mais uns 3 minutinhos para execução do Bellman-Ford para encontrar o vértice mais distante do vértice 129...")
+        d2, _, _ = grafo.bf(129)
+        mais_distante2 = max(d2, key=d2.get)
+        print(f"e2) Vértice mais distante de 129: {mais_distante2}, Distância: {d2[mais_distante2]}")
         print("")
 
         
