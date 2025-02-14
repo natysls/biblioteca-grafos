@@ -153,6 +153,95 @@ class Grafo:
                         msg = "O grafo contém um ciclo de peso negativo!"
 
         return d, pi, msg
+    
+    '''
+    def dfs(self, v):
+        """
+        Executa uma busca em profundidade (DFS) iterativa a partir do vértice v.
+        Retorna três estruturas:
+        - pi: Predecessores de cada vértice na árvore de busca (dicionário).
+        - v_ini: Tempo de início da visita a cada vértice (defaultdict, valor padrão -1).
+        - v_fim: Tempo de término da visita a cada vértice (defaultdict, valor padrão -1).
+        """
+
+        self.pi = {}
+        self.v_ini = defaultdict(lambda: -1)
+        self.v_fim = defaultdict(lambda: -1)
+        self.tempo = 0
+
+        stack = [(v, "inicio")]
+        visitados = set() 
+
+        while stack:
+            vertice, status = stack.pop()
+
+            if status == "inicio":
+                
+                if vertice not in visitados:
+                    visitados.add(vertice)
+                    self.tempo += 1
+                    self.v_ini[vertice] = self.tempo
+
+                    stack.append((vertice, "fim"))
+
+                    for vizinho in self.viz(vertice):
+                        if vizinho not in visitados:
+                            self.pi[vizinho] = vertice
+                            stack.append((vizinho, "inicio"))
+
+            elif status == "fim":
+                self.tempo += 1
+                self.v_fim[vertice] = self.tempo
+
+        return self.pi, self.v_ini, self.v_fim
+    '''
+
+    def dfs(self, v):
+        """
+        Executa uma busca em profundidade (DFS) iterativa a partir do vértice v.
+        Retorna:
+        - pi: Predecessores de cada vértice na árvore de busca (dicionário).
+        - v_ini: Tempo de início da visitação para cada vértice (defaultdict, valor padrão -1).
+        - v_fim: Tempo de término da visitação para cada vértice (defaultdict, valor padrão -1).
+        - caminho_maior_10: O primeiro caminho encontrado com 10 ou mais arestas (se existir).
+        """
+
+        pi = {}
+        v_ini = defaultdict(lambda: -1)
+        v_fim = defaultdict(lambda: -1)
+        tempo = 0
+        stack = [(v, "inicio")]
+        visitados = set()
+        caminho_atual = []
+        caminho_maior_10 = None
+
+        while stack:
+            vertice, status = stack.pop()
+
+            if status == "inicio":
+                if vertice not in visitados:
+                    visitados.add(vertice)
+                    tempo += 1
+                    v_ini[vertice] = tempo
+                    caminho_atual.append(vertice)
+
+                    stack.append((vertice, "fim"))
+
+                    for vizinho in self.viz(vertice):
+                        if vizinho not in visitados:
+                            pi[vizinho] = vertice
+                            stack.append((vizinho, "inicio"))
+
+            elif status == "fim":
+                tempo += 1
+                v_fim[vertice] = tempo
+                if len(caminho_atual) >= 11 and caminho_maior_10 is None:
+                    caminho_maior_10 = caminho_atual[:]
+                caminho_atual.pop()
+
+        return pi, v_ini, v_fim, caminho_maior_10
+
+
 
 class Digrafo(Grafo):
     def __init__(self, usar_matriz=False):

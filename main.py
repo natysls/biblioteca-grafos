@@ -70,6 +70,21 @@ class Main:
         print(f"h) BFS: O vértice de maior distância até 56 é {vertice_max} com o seguinte predecessor {predecessor_max}")
         print(f"c2) Um caminho com uma qtde. de arestas maior ou igual a 10 com BFS: {caminho_maior_10_areastas}")
 
+        pi_dfs, v_ini, v_fim,  caminho_maior_10_areastas_dfs= grafo.dfs(v=56)
+        if pi_dfs.get(56, 'Não possui predecessor') == 'Não possui predecessor':
+            print(f"i) DFS: Vértice 56 não possui predecessor")
+        else:
+            print(f"i) DFS: Vértice 56 com o seguinte predecessor: {pi_dfs.get(56, 'Não possui predecessor')}")
+        print(f"  - Tempo de início: {v_ini[57]}")
+        print(f"  - Tempo de término: {v_fim[57]}")
+        print(f"  - Diferença: {v_fim[57] - v_ini[57]}")
+        if (v_fim[57] - v_ini[57]) == 1:
+            print("    -> Este vértice é uma folha na árvore de busca (não tem descendentes).")
+        else:
+            print(f"    -> Este vértice tem {(v_fim[57] - v_ini[57]) - 1} unidades de tempo gastas explorando seus descendentes.")
+        print(f"c2) Um caminho com uma qtde. de arestas maior ou igual a 10 com DFS: {caminho_maior_10_areastas_dfs}")
+        print("")
+
         print("")
         print("Espere uns 2 minutinhos para execução do Bellman-Ford iniciando pelo vertice 1, será baixado um .txt...")
         d, pi, msg = grafo.bf(1)
