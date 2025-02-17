@@ -102,15 +102,26 @@ class Main:
         print(f"e2) Vértice mais distante de 129: {mais_distante2}, Distância: {d2[mais_distante2]}")
         print("")
 
-        
-# Teste 1: Digrafo com Lista de Adjacencia
-Main.mostrar_resultados(usar_matriz=False, usar_digrafo=True, teste='Teste 1: Digrafo com Lista de Adjacencia')
+    @staticmethod
+    def escolher_teste():
+        print("Escolha um teste para rodar:")
+        print("1 - Teste 1: Digrafo com Lista de Adjacencia")
+        print("2 - Teste 2: Grafo com Lista de Adjacencia")
+        print("3 - Teste 3: Digrafo com Matriz de Adjacencia")
+        print("4 - Teste 4: Grafo com Matriz de Adjacencia")
 
-# Teste 2: Grafo com Lista de Adjacencia
-#Main.mostrar_resultados(usar_matriz=False, usar_digrafo=False, teste='Teste 2: Grafo com Lista de Adjacencia')
+        escolha = input("Digite o número do teste que deseja rodar (1-4): ")
 
-# Teste 3: Digrafo com Matriz de Adjacencia
-#Main.mostrar_resultados(usar_matriz=True, usar_digrafo=True, teste='Teste 3: Digrafo com Matriz de Adjacencia')
+        if escolha == '1':
+            Main.mostrar_resultados(usar_matriz=False, usar_digrafo=True, teste='Teste 1: Digrafo com Lista de Adjacencia')
+        elif escolha == '2':
+            Main.mostrar_resultados(usar_matriz=False, usar_digrafo=False, teste='Teste 2: Grafo com Lista de Adjacencia')
+        elif escolha == '3':
+            Main.mostrar_resultados(usar_matriz=True, usar_digrafo=True, teste='Teste 3: Digrafo com Matriz de Adjacencia')
+        elif escolha == '4':
+            Main.mostrar_resultados(usar_matriz=True, usar_digrafo=False, teste='Teste 4: Grafo com Matriz de Adjacencia')
+        else:
+            print("Opção inválida! Por favor, escolha um número de 1 a 4.")
 
-# Teste 4: Grafo com Matriz de Adjacencia
-#Main.mostrar_resultados(usar_matriz=True, usar_digrafo=False, teste='Teste 4: Grafo com Matriz de Adjacencia')
+
+Main.escolher_teste()
