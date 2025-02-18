@@ -52,6 +52,7 @@ class Main:
         grafo = Main.abrir_arquivo(arquivo, usar_matriz, usar_digrafo)
         #grafo = Main.exemplo_facil(usar_matriz, usar_digrafo)
 
+        print("")
         print(teste)
         print(f"a) Número de vértices: {grafo.n()}")
         print(f"b) Número de arestas: {grafo.m()}")
