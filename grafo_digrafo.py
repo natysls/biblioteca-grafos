@@ -93,15 +93,6 @@ class Grafo:
 
         return d, pi, caminho_maior_10_arestas
     
-    def vertices_alcancaveis(self, v): 
-        """"
-        Pré-procesamento dos dados para o BF
-        Evita percorrer vértices que nunca serão atualizados.
-        Filtra apenas os vértices alcançáveis
-        """
-        distancias, _, _ = self.bfs(v)
-        return {u for u, d in distancias.items() if d != -1} 
-
     def relaxamento(self, origem, destino, peso, d, pi, fila, na_fila):
         if d[destino] > d[origem] + peso:  
             d[destino] = d[origem] + peso
@@ -113,17 +104,13 @@ class Grafo:
 
     def bf(self, v): # Bellman-Ford
         """
-        Será preciso um pré-processamento dos dados para otimizar o tempo
+        Calcula as menores distâncias a partir do vértice v.
         - d: distâncias mínimas de v para cada vértice (calculada iterativamente) (soma dos pesos)
         - pi: pai de cada vértice no caminho mínimo.
-        Pior caso: |V| - 1 iterações complexidade O(V * E) não processa alto volume de vertices
-        Melhor caso: Fila O(E)
         """
-        # PRÉ-PROCESSAMENTO
-        alcancaveis = self.vertices_alcancaveis(v)
-
-        d = {vertice: float('inf') for vertice in alcancaveis}
-        pi = {vertice: None for vertice in alcancaveis}
+        estrutura = self.matriz_adjacencia if self.usar_matriz else self.lista_adjacencia
+        d = {vertice: float('inf') for vertice in estrutura}
+        pi = {vertice: None for vertice in estrutura}
         
         d[v] = 0  # A distância do vértice de origem para ele mesmo é 0
         msg = "Tudo certo"
@@ -138,19 +125,15 @@ class Grafo:
 
             vizinhos = self.viz(u)
             for v in vizinhos:
-                if v not in alcancaveis:
-                    continue
-
                 peso = self.w(u, v)  
                 self.relaxamento(origem=u, destino=v, peso=peso, d=d, pi=pi, fila=fila, na_fila=na_fila)
 
         # Verificação de ciclos de peso negativo
-        for u in alcancaveis:
-            for v in (self.lista_adjacencia[u] if not self.usar_matriz else self.matriz_adjacencia.get(u, {})):
-                if v in alcancaveis:  # Só verifica ciclos em vértices alcançáveis
-                    peso = self.w(u, v)
-                    if d[v] > d[u] + peso:
-                        msg = "O grafo contém um ciclo de peso negativo!"
+        for u in estrutura:
+            for v in estrutura[u]:
+                peso = self.w(u, v)
+                if d[v] > d[u] + peso:
+                    msg = "O grafo contém um ciclo de peso negativo!"
 
         return d, pi, msg
     
