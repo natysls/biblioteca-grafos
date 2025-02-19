@@ -1,4 +1,6 @@
 from collections import defaultdict, deque
+import heapq
+
 class Grafo:
     def __init__(self, direcionado=False, usar_matriz=False):
         self.direcionado = direcionado
@@ -154,47 +156,6 @@ class Grafo:
 
         return d, pi, msg
     
-    '''
-    def dfs(self, v):
-        """
-        Executa uma busca em profundidade (DFS) iterativa a partir do vértice v.
-        Retorna três estruturas:
-        - pi: Predecessores de cada vértice na árvore de busca (dicionário).
-        - v_ini: Tempo de início da visita a cada vértice (defaultdict, valor padrão -1).
-        - v_fim: Tempo de término da visita a cada vértice (defaultdict, valor padrão -1).
-        """
-
-        self.pi = {}
-        self.v_ini = defaultdict(lambda: -1)
-        self.v_fim = defaultdict(lambda: -1)
-        self.tempo = 0
-
-        stack = [(v, "inicio")]
-        visitados = set() 
-
-        while stack:
-            vertice, status = stack.pop()
-
-            if status == "inicio":
-                
-                if vertice not in visitados:
-                    visitados.add(vertice)
-                    self.tempo += 1
-                    self.v_ini[vertice] = self.tempo
-
-                    stack.append((vertice, "fim"))
-
-                    for vizinho in self.viz(vertice):
-                        if vizinho not in visitados:
-                            self.pi[vizinho] = vertice
-                            stack.append((vizinho, "inicio"))
-
-            elif status == "fim":
-                self.tempo += 1
-                self.v_fim[vertice] = self.tempo
-
-        return self.pi, self.v_ini, self.v_fim
-    '''
 
     def dfs(self, v):
         """
@@ -241,7 +202,35 @@ class Grafo:
 
         return pi, v_ini, v_fim, caminho_maior_10
 
+    def djikstra(self, v):
+        """
+        Algoritmo de Dijkstra para encontrar o caminho mínimo a partir do vértice 'v'.
+        Retorna as distâncias mínimas de 'v' para todos os outros vértices
+        e os predecessores de cada vértice no caminho mínimo.
+        """
+        distancias = {vertice: float('inf') for vertice in self.vertices}
+        predecessores = {vertice: None for vertice in self.vertices}
+        distancias[v] = 0
 
+        fila_prioridade = [(0, v)]
+
+        while fila_prioridade:
+    
+            distancia_atual, vertice_atual = heapq.heappop(fila_prioridade)
+
+            if distancia_atual > distancias[vertice_atual]:
+                continue
+
+            for vizinho in self.viz(vertice_atual):
+                peso_aresta = self.w(vertice_atual, vizinho)
+                distancia_vizinho = distancias[vertice_atual] + peso_aresta
+
+                if distancia_vizinho < distancias[vizinho]:
+                    distancias[vizinho] = distancia_vizinho
+                    predecessores[vizinho] = vertice_atual
+                    heapq.heappush(fila_prioridade, (distancia_vizinho, vizinho))
+
+        return distancias, predecessores
 
 class Digrafo(Grafo):
     def __init__(self, usar_matriz=False):
