@@ -101,16 +101,17 @@ class Main:
         d2, _, _ = grafo.bf(129)
         mais_distante2 = max(d2, key=d2.get)
         print(f"e2) Vértice mais distante de 129: {mais_distante2}, Distância: {d2[mais_distante2]}")
-        print("")
 
         print("")
         distancia_minima_djikstra, predecessor_djikstra = grafo.djikstra(1)
         mais_distante_djikstra = max(distancia_minima_djikstra, key=distancia_minima_djikstra.get)
+        print("Espere uns 2 minutinhos para execução do Djikstra para encontrar o vértice mais distante do vértice 1...")
         print("k) Djikstra")
         Main.salvar_resultado_bf(distancia_minima_djikstra, predecessor_djikstra, "resultado_djikstra_1.txt")
         print(f"e2) Vértice mais distante de 1: {mais_distante_djikstra}, Distância: {distancia_minima_djikstra[mais_distante_djikstra]}, Predecessor: {predecessor_djikstra[mais_distante_djikstra]}")
 
         print("")
+        print("Agora espere mais uns 2 minutinhos para execução do Djikstra para encontrar o vértice mais distante do vértice 129...")
         distancia_minima_djikstra_129, _ = grafo.djikstra(129)
         mais_distante_djikstra_129= max(distancia_minima_djikstra_129, key=distancia_minima_djikstra_129.get)
         print(f"e2) Vértice mais distante de 129: {mais_distante_djikstra_129}, Distância: {distancia_minima_djikstra_129[mais_distante_djikstra_129]}")
